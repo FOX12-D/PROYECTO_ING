@@ -1,6 +1,6 @@
 /* ---------- Datos de ejemplo (simulan la base de datos) ---------- */
 const hoy=new Date();const d=n=>{const x=new Date(hoy);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
-const USERS={operario:{pass:"op123",rol:"Operario",nombre:"Luis Quispe"},supervisor:{pass:"sup123",rol:"Supervisor",nombre:"Marta Rojas"}};
+const USERS={"operario@alicorp.demo":{pass:"Operario#2026",rol:"Operario",rolId:"operario",nombre:"Luis Quispe"},"supervisor@alicorp.demo":{pass:"Supervisor#2026",rol:"Supervisor",rolId:"supervisor",nombre:"Marta Rojas"}};
 const PRODUCTOS=[
  {ean:"7750885000011",nombre:"Aceite Primor Clásico 1 L",marca:"Primor",cat:"Aceites",peso:"0.92 kg",cajas:"12 und/caja",alm:"Ambiente seco"},
  {ean:"7750885000028",nombre:"Fideos Don Vittorio Spaghetti 500 g",marca:"Don Vittorio",cat:"Pastas",peso:"0.50 kg",cajas:"20 und/caja",alm:"Ambiente seco"},
@@ -36,15 +36,15 @@ function toast(t){const e=document.getElementById("toast");e.textContent=t;e.cla
 /* ---------- Login ---------- */
 document.getElementById("lb").onclick=()=>{
  const u=document.getElementById("u").value.trim().toLowerCase(),p=document.getElementById("p").value;
- if(USERS[u]&&USERS[u].pass===p){user={...USERS[u],id:u};document.getElementById("login").classList.add("hidden");document.getElementById("app").classList.remove("hidden");view=u==="supervisor"?"envio":"escaneo";menu();render()}
- else document.getElementById("le").textContent="Usuario o contraseña incorrectos. Revisa las cuentas de prueba."};
+ if(USERS[u]&&USERS[u].pass===p){user={...USERS[u],id:USERS[u].rolId};document.getElementById("login").classList.add("hidden");document.getElementById("app").classList.remove("hidden");view=USERS[u].rolId==="supervisor"?"envio":"escaneo";menu();render()}
+ else document.getElementById("le").textContent="Correo o contraseña incorrectos. Revisa las cuentas de prueba."};
 document.getElementById("p").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("lb").click()});
 
 /* ---------- Navegación ---------- */
-const SECC=[["escaneo","📷","Escanear"],["lote","📦","Lote a enviar"],["ruta","🗺️","Ruta"],["actualizado","🔄","Lote actualizado"],["envio","🚚","Estado envío"],["producto","🏷️","Estado producto"],["espec","📋","Especificación"]];
+const SECC=[["escaneo","📷","Escanear"],["lote","📦","Lote a enviar"],["ruta","🗺️","Ruta"],["actualizado","🔄","Lote actualizado"],["envio","🚚","Estado envío"],["producto","🏷️","Estado producto"],["espec","📋","Especificación"],["reportes","📄","Reportes"]];
 function menu(){
  const nav=document.getElementById("nav");
- nav.innerHTML=`<div class="logo"><i>A</i><h1>WMS</h1></div>`+SECC.map(s=>`<button data-v="${s[0]}"><span aria-hidden="true">${s[1]}</span>${s[2]}</button>`).join("")+`<div class="who">${user.nombre}<br>${user.rol}<br><button id="out" style="padding:6px 0">Cerrar sesión</button></div>`;
+ nav.innerHTML=`<div class="logo"><i>A</i><h1>WMS</h1></div>`+SECC.filter(s=>s[0]!=="reportes"||user.id==="supervisor").map(s=>`<button data-v="${s[0]}"><span aria-hidden="true">${s[1]}</span>${s[2]}</button>`).join("")+`<div class="who">${user.nombre}<br>${user.rol}<br><button id="out" style="padding:6px 0">Cerrar sesión</button></div>`;
  nav.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{stopScan();view=b.dataset.v;render()});
  document.getElementById("out").onclick=()=>location.reload()}
 function selPedido(){return `<label for="ps">Pedido activo</label><select id="ps">${PEDIDOS.map(p=>`<option value="${p.id}" ${p.id===pedidoSel?"selected":""}>${p.id} · ${p.cliente}</option>`).join("")}</select>`}
@@ -82,6 +82,13 @@ function render(){
    return`<tr><td>${x.id}</td><td>${x.cliente}</td><td>${x.ruta}</td><td style="min-width:110px">${pc}%<div class="bar"><div style="width:${pc}%"></div></div></td><td>${user.id==="supervisor"?`<select data-p="${x.id}" aria-label="Estado de ${x.id}">${ESTADOS.map(e=>`<option ${e===x.estado?"selected":""}>${e}</option>`).join("")}</select>`:pill(x.estado,clsEnvio(x.estado))}</td></tr>`}).join("")}</table></div>
   ${user.id==="supervisor"?"":`<p style="color:var(--mute)">Solo el supervisor puede cambiar el estado del envío.</p>`}`;
   m.querySelectorAll("[data-p]").forEach(s=>s.onchange=()=>{PEDIDOS.find(x=>x.id===s.dataset.p).estado=s.value;toast("Estado actualizado");render()})}
+
+ if(view==="reportes"){
+  const por=LOTES.filter(l=>l.stock>0&&dias(l.venc)>=0&&dias(l.venc)<=30).length,ven=LOTES.filter(l=>l.stock>0&&dias(l.venc)<0).length;
+  m.innerHTML=head("Reportes")+`<div class="kpis"><div class="kpi"><b>${PEDIDOS.length}</b><span>Pedidos</span></div><div class="kpi"><b>${ACTUALIZACIONES.length}</b><span>Movimientos</span></div><div class="kpi"><b>${por}</b><span>Lotes por vencer</span></div><div class="kpi"><b>${ven}</b><span>Lotes vencidos</span></div></div>
+  <div class="grid"><div class="card"><h3>Descargar</h3><p style="color:var(--mute)">Incluye estado de los envíos, movimientos de lotes y estado de los lotes.</p><div class="row"><button class="btn go" id="bpdf">Descargar PDF</button><button class="btn sec" id="bcsv">Descargar Excel (CSV)</button></div></div>
+  <div class="card"><h3>Enviar por correo</h3><label for="dest">Correo del destinatario</label><input id="dest" type="email" placeholder="jefe.almacen@empresa.com"><button class="btn full" id="bmail">Preparar correo</button><p style="color:var(--mute);font-size:.9rem">Se abre tu programa de correo con el resumen. Adjunta el PDF descargado antes de enviar.</p></div></div>`;
+  document.getElementById("bpdf").onclick=descargarPDF;document.getElementById("bcsv").onclick=descargarCSV;document.getElementById("bmail").onclick=enviarCorreo}
  if(view==="producto"){
   m.innerHTML=head("Estado del producto")+`<div class="tw"><table><tr><th>Lote</th><th>Producto</th><th>Vence</th><th>Stock</th><th>Ubicación</th><th>Estado</th></tr>${[...LOTES].sort((a,b)=>a.venc.localeCompare(b.venc)).map(l=>{const[t,c]=estLote(l);return`<tr><td>${l.id}</td><td>${prod(l.ean).nombre}</td><td>${l.venc}</td><td>${l.stock}</td><td>${l.ubic}</td><td>${pill(t,c)}</td></tr>`}).join("")}</table></div>
   <p style="color:var(--mute)">Ordenado por fecha de vencimiento: los primeros lotes son los que deben salir antes.</p>`}
@@ -109,6 +116,33 @@ function confirmar(){
  ACTUALIZACIONES.unshift({h:new Date().toLocaleTimeString("es-PE"),ped:p.id,lote:l.id,q,ant,nue:l.stock,u:user.nombre});
  const todo=p.items.every(i=>i.picked>=i.qty);if(p.estado==="Pendiente"||p.estado==="En picking")p.estado=todo?"Cargado":"En picking";
  toast(todo?"Pedido completo y listo para carga":"Picking registrado");showRes()}
+/* ---------- Reportes (PDF, CSV y correo) ---------- */
+const H={env:["Pedido","Cliente","Ruta","Camión","Avance","Estado"],mov:["Hora","Pedido","Lote","Cantidad","Stock anterior","Stock nuevo","Usuario"],lot:["Lote","Producto","Vence","Stock","Ubicación","Estado"]};
+function datosReporte(){
+ return{env:PEDIDOS.map(x=>{const t=x.items.reduce((a,i)=>a+i.qty,0),k=x.items.reduce((a,i)=>a+i.picked,0);return[x.id,x.cliente,x.ruta,x.camion,k+"/"+t,x.estado]}),
+  mov:ACTUALIZACIONES.map(a=>[a.h,a.ped,a.lote,"-"+a.q,a.ant,a.nue,a.u]),
+  lot:[...LOTES].sort((a,b)=>a.venc.localeCompare(b.venc)).map(l=>[l.id,prod(l.ean).nombre,l.venc,l.stock,l.ubic,estLote(l)[0]])}}
+function descargarPDF(){
+ if(!window.jspdf){toast("No cargó la librería PDF. Revisa tu conexión a internet.");return}
+ const doc=new window.jspdf.jsPDF(),r=datosReporte();
+ doc.setFontSize(16);doc.text("WMS Alicorp - Reporte de picking y lotes",14,16);
+ doc.setFontSize(10);doc.text("Generado: "+new Date().toLocaleString("es-PE")+"  |  Por: "+user.nombre+" ("+user.rol+")",14,23);
+ let y=32;
+ [["Estado de los envíos","env"],["Movimientos de lotes","mov"],["Estado de los lotes","lot"]].forEach(([t,k])=>{
+  if(y>250){doc.addPage();y=16}
+  doc.setFontSize(12);doc.text(t,14,y);
+  doc.autoTable({startY:y+3,head:[H[k]],body:r[k].length?r[k]:[["Sin registros"]],styles:{fontSize:9},headStyles:{fillColor:[11,79,124]}});
+  y=doc.lastAutoTable.finalY+12});
+ doc.save("reporte-wms-alicorp.pdf");toast("PDF descargado")}
+function descargarCSV(){
+ const r=datosReporte(),f=a=>a.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(";");
+ const txt=["ENVIOS",f(H.env),...r.env.map(f),"","MOVIMIENTOS",f(H.mov),...r.mov.map(f),"","LOTES",f(H.lot),...r.lot.map(f)].join("\n");
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\uFEFF"+txt],{type:"text/csv;charset=utf-8"}));a.download="reporte-wms-alicorp.csv";a.click();URL.revokeObjectURL(a.href);toast("Archivo descargado")}
+function enviarCorreo(){
+ const to=document.getElementById("dest").value.trim();
+ if(!/^\S+@\S+\.\S+$/.test(to)){toast("Escribe un correo válido");return}
+ const r=datosReporte(),cuerpo="Reporte WMS Alicorp\n\n"+r.env.map(x=>x[0]+" - "+x[1]+": "+x[5]+" (avance "+x[4]+")").join("\n")+"\n\nAdjunto el PDF completo.";
+ location.href="mailto:"+to+"?subject="+encodeURIComponent("Reporte WMS Alicorp")+"&body="+encodeURIComponent(cuerpo)}
 async function startScan(){
  try{stopScan();scanner=new Html5Qrcode("reader");
   await scanner.start({facingMode:"environment"},{fps:10,qrbox:{width:260,height:130}},t=>{onCode(t)},()=>{})}
