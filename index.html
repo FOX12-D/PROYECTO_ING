@@ -1,50 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#10243a">
-<title>Alicorp Logistics | Gestión de Picking</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="css/styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WMS Alicorp · Picking y lotes</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<section id="login" class="login-wrap">
- <div class="login-art">
-  <div class="brand">ALICORP <span>LOGISTICS</span></div>
-  <div><h1>Control logístico, de principio a fin.</h1><p>Prototipo de gestión de picking, trazabilidad de lotes y distribución para almacenes de producto terminado.</p></div>
-  <small style="color:#9fb3c6">PROTOTIPO ACADÉMICO · 2026</small>
- </div>
- <div class="login-card">
-  <div class="brand" style="color:#10243a;margin-bottom:35px">ALICORP <span>LOGISTICS</span></div>
-  <h2>Iniciar sesión</h2><p class="muted" style="font-size:13px">Ingresa al entorno de demostración.</p>
-  <div class="field"><label>Usuario</label><input id="username" value="operario" placeholder="Ingresa tu usuario"></div>
-  <div class="field"><label>Contraseña</label><input id="password" type="password" value="123456" placeholder="Ingresa tu contraseña"></div>
-  <div class="field"><label>Tipo de acceso</label><select id="role"><option value="operario">Operario</option><option value="supervisor">Supervisor</option></select></div>
-  <button class="primary" onclick="login()">Ingresar al sistema →</button>
-  <div class="demo-note"><b>Acceso de demostración</b><br>Usuario: operario o supervisor<br>Contraseña: 123456<br>Selecciona el rol para visualizar sus módulos.</div>
- </div>
+
+<section id="login">
+ <form class="lbox" id="lf" onsubmit="return false">
+  <div class="logo"><i>A</i><h1>WMS Alicorp</h1></div>
+  <p style="color:var(--mute);margin:0">Picking y control de lotes. Inicia sesión para continuar.</p>
+  <label for="u">Usuario</label><input id="u" autocomplete="username" placeholder="operario o supervisor">
+  <label for="p">Contraseña</label><input id="p" type="password" autocomplete="current-password">
+  <div class="err" id="le" role="alert"></div>
+  <button class="btn full" id="lb">Ingresar</button>
+  <div class="demo">Cuentas de prueba:<br><b>operario</b> / op123 &nbsp;·&nbsp; <b>supervisor</b> / sup123</div>
+ </form>
 </section>
-<div id="application" class="app hidden">
- <aside class="sidebar" id="sidebar">
-  <div class="side-brand">ALICORP <span>LOGISTICS</span></div>
-  <div><div class="nav-label">OPERACIONES</div><nav class="nav" id="nav">
-   <button class="active" data-page="dashboard" onclick="showPage('dashboard')"><span class="ico">▦</span>Panel principal</button>
-   <button data-page="scanner" onclick="showPage('scanner')"><span class="ico">▣</span>Escanear producto</button>
-   <button data-page="picking" onclick="showPage('picking')"><span class="ico">▤</span>Lotes de picking</button>
-   <button data-page="products" onclick="showPage('products')"><span class="ico">▧</span>Productos</button>
-   <button data-page="shipments" onclick="showPage('shipments')"><span class="ico">⇢</span>Envíos y rutas</button>
-   <button data-page="inventory" class="supervisor-only" onclick="showPage('inventory')"><span class="ico">▥</span>Inventario y lotes</button>
-   <button data-page="users" class="supervisor-only" onclick="showPage('users')"><span class="ico">♙</span>Usuarios</button>
-  </nav></div>
-  <div class="side-bottom">Sistema de trazabilidad<br><b style="color:#fff">Entorno de demostración</b></div>
- </aside>
- <main class="main">
-  <header class="topbar"><div style="display:flex;align-items:center;gap:12px"><button class="mobile-menu" onclick="toggleMenu()">☰</button><span class="topbar-title">Gestión de almacén</span></div><div class="top-actions"><span class="role-pill" id="roleLabel">OPERARIO</span><div class="avatar" id="avatar">OP</div><button class="secondary" style="padding:8px 10px;font-size:11px" onclick="logout()">Salir</button></div></header>
-  <div class="content" id="view"></div>
- </main>
+
+<div id="app" class="hidden">
+ <nav id="nav" aria-label="Secciones"></nav>
+ <main id="main"></main>
 </div>
-<div id="toast" class="toast hidden"></div>
-<script src="js/app.js"></script>
+<div id="toast" class="hidden" role="status"></div>
+
+<script src="app.js"></script>
 </body>
 </html>
