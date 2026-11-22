@@ -6,6 +6,7 @@
 <title>WMS Alicorp · Picking y lotes</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.6/JsBarcode.all.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <link rel="stylesheet" href="styles.css">
@@ -13,15 +14,22 @@
 <body>
 
 <section id="login">
- <form class="lbox" id="lf" onsubmit="return false">
-  <div class="logo"><i>A</i><h1>WMS Alicorp</h1></div>
-  <p style="color:var(--mute);margin:0">Picking y control de lotes. Inicia sesión para continuar.</p>
-  <label for="u">Correo electrónico</label><input id="u" type="email" autocomplete="username" placeholder="nombre@alicorp.demo">
-  <label for="p">Contraseña</label><input id="p" type="password" autocomplete="current-password">
-  <div class="err" id="le" role="alert"></div>
-  <button class="btn full" id="lb">Ingresar</button>
-  <div class="demo">Cuentas de prueba:<br><b>Operario:</b> operario@alicorp.demo / Operario#2026<br><b>Supervisor:</b> supervisor@alicorp.demo / Supervisor#2026</div>
- </form>
+ <div class="lwrap">
+  <aside class="lhero">
+   <div class="brand"><i>A</i><div><b>WMS Alicorp</b><small>Picking y control de lotes</small></div></div>
+   <h1>Pedidos completos, lotes en orden y camiones que salen a tiempo.</h1>
+   <ul><li>Escaneo de códigos de barras con la cámara</li><li>Rotación de lotes automática (FIFO)</li><li>Reportes en PDF para el supervisor</li></ul>
+  </aside>
+  <form class="lbox" id="lf" onsubmit="return false">
+   <h2>Iniciar sesión</h2>
+   <p style="color:var(--mute);margin:6px 0 0">Ingresa con tu correo de la empresa.</p>
+   <label for="u">Correo electrónico</label><input id="u" type="email" autocomplete="username" placeholder="nombre@alicorp.demo">
+   <label for="p">Contraseña</label><input id="p" type="password" autocomplete="current-password">
+   <div class="err" id="le" role="alert"></div>
+   <button class="btn full" id="lb">Ingresar</button>
+   <div class="demo">Cuentas de prueba:<br><b>Operario:</b> operario@alicorp.demo / Operario#2026<br><b>Supervisor:</b> supervisor@alicorp.demo / Supervisor#2026</div>
+  </form>
+ </div>
 </section>
 
 <div id="app" class="hidden">
