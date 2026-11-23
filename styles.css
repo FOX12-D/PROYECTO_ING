@@ -105,3 +105,23 @@ nav .grp{font-size:.74rem;color:rgba(255,255,255,.45);padding:16px 12px 4px;font
 .chk input{width:auto}
 .lhero small{margin-top:auto;opacity:.6}
 @media (max-width:820px){nav .grp{display:none}}
+/* Panel de presentación del login: solo marca y título */
+.lhero{align-items:center;justify-content:center;text-align:center;gap:18px}
+.lhero .mark i{width:76px;height:76px;border-radius:18px;background:var(--accent);color:#1b1100;display:grid;place-items:center;font:700 2.8rem "Barlow Condensed";font-style:normal}
+.lhero h1{font-size:2.9rem}
+@media (max-width:720px){.lhero{padding:22px;flex-direction:row;justify-content:flex-start;text-align:left}.lhero .mark i{width:46px;height:46px;font-size:1.7rem;border-radius:11px}.lhero h1{font-size:1.7rem}}
+/* ====== LOGIN (diseño completo) ====== */
+#login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.lg-wrap{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:920px;min-height:520px;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--sh)}
+.lg-hero{position:relative;background:var(--side);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px;overflow:hidden}
+.lg-logo{width:84px;height:84px;border-radius:20px;background:var(--accent);color:#1b1100;display:grid;place-items:center;font:700 3rem/1 "Barlow Condensed"}
+.lg-hero h1{font-size:3rem;line-height:1;text-align:center}
+.lg-bars{position:absolute;left:0;right:0;bottom:0;height:70px;opacity:.1;background:repeating-linear-gradient(90deg,#fff 0 3px,transparent 3px 7px,#fff 7px 8px,transparent 8px 14px,#fff 14px 19px,transparent 19px 22px)}
+.lg-form{display:flex;flex-direction:column;justify-content:center;padding:44px}
+.lg-form h2{font-size:2rem}
+.lg-sub{margin:6px 0 10px;color:var(--mute)}
+.lg-field{position:relative}
+.lg-field .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--mute);pointer-events:none}
+.lg-field input{padding-left:42px}
+.lg-form .btn.full{padding:13px;font-size:1.02rem}
+@media (max-width:760px){.lg-wrap{grid-template-columns:1fr;min-height:0}.lg-hero{flex-direction:row;justify-content:flex-start;padding:22px;gap:14px}.lg-logo{width:48px;height:48px;font-size:1.8rem;border-radius:12px}.lg-hero h1{font-size:1.7rem}.lg-bars{display:none}.lg-form{padding:26px 22px}}

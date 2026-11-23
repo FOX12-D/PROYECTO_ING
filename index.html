@@ -14,18 +14,25 @@
 <body>
 
 <section id="login">
- <div class="lwrap">
-  <aside class="lhero">
-   <div class="brand"><i>A</i><div><b>WMS Alicorp</b><small>Picking y control de lotes</small></div></div>
-   <h1>Pedidos completos, lotes en orden y camiones que salen a tiempo.</h1>
-   <ul><li>Escaneo con cámara y registro automático de picking</li><li>Rotación FIFO y alertas de vencimiento</li><li>Conciliación de stock y reportes en PDF y XML</li></ul>
-   <small>Prototipo académico · WMS Alicorp 2026</small>
+ <div class="lg-wrap">
+  <aside class="lg-hero">
+   <div class="lg-logo">A</div>
+   <h1>WMS Alicorp</h1>
+   <div class="lg-bars" aria-hidden="true"></div>
   </aside>
-  <form class="lbox" id="lf" onsubmit="return false">
+  <form class="lg-form" id="lf" onsubmit="return false">
    <h2>Iniciar sesión</h2>
-   <p style="color:var(--mute);margin:6px 0 0">Ingresa con tu correo de la empresa.</p>
-   <label for="u">Correo electrónico</label><input id="u" type="email" autocomplete="username" placeholder="nombre@alicorp.demo">
-   <label for="p">Contraseña</label><input id="p" type="password" autocomplete="current-password">
+   <p class="lg-sub">Ingresa con tu correo de la empresa.</p>
+   <label for="u">Correo electrónico</label>
+   <div class="lg-field">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4zM4 7l8 6 8-6"/></svg>
+    <input id="u" type="email" autocomplete="username" placeholder="nombre@empresa.com">
+   </div>
+   <label for="p">Contraseña</label>
+   <div class="lg-field">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+    <input id="p" type="password" autocomplete="current-password" placeholder="Tu contraseña">
+   </div>
    <label class="chk"><input type="checkbox" id="sp">Mostrar contraseña</label>
    <div class="err" id="le" role="alert"></div>
    <button class="btn full" id="lb">Ingresar</button>
