@@ -18,16 +18,17 @@
   <aside class="lhero">
    <div class="brand"><i>A</i><div><b>WMS Alicorp</b><small>Picking y control de lotes</small></div></div>
    <h1>Pedidos completos, lotes en orden y camiones que salen a tiempo.</h1>
-   <ul><li>Escaneo de códigos de barras con la cámara</li><li>Rotación de lotes automática (FIFO)</li><li>Reportes en PDF para el supervisor</li></ul>
+   <ul><li>Escaneo con cámara y registro automático de picking</li><li>Rotación FIFO y alertas de vencimiento</li><li>Conciliación de stock y reportes en PDF y XML</li></ul>
+   <small>Prototipo académico · WMS Alicorp 2026</small>
   </aside>
   <form class="lbox" id="lf" onsubmit="return false">
    <h2>Iniciar sesión</h2>
    <p style="color:var(--mute);margin:6px 0 0">Ingresa con tu correo de la empresa.</p>
    <label for="u">Correo electrónico</label><input id="u" type="email" autocomplete="username" placeholder="nombre@alicorp.demo">
    <label for="p">Contraseña</label><input id="p" type="password" autocomplete="current-password">
+   <label class="chk"><input type="checkbox" id="sp">Mostrar contraseña</label>
    <div class="err" id="le" role="alert"></div>
    <button class="btn full" id="lb">Ingresar</button>
-   <div class="demo">Cuentas de prueba:<br><b>Operario:</b> operario@alicorp.demo / Operario#2026<br><b>Supervisor:</b> supervisor@alicorp.demo / Supervisor#2026</div>
   </form>
  </div>
 </section>

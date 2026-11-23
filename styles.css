@@ -98,3 +98,10 @@ dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:10px 0 0}dt{c
 .steps li:first-child::after{display:none}
 .steps li.on{color:var(--ink);font-weight:600}
 .steps li.on::before,.steps li.on::after{background:var(--ok)}
+/* Navegación agrupada, casillas y ajustes */
+nav{overflow-y:auto}
+nav .grp{font-size:.74rem;color:rgba(255,255,255,.45);padding:16px 12px 4px;font-weight:600}
+.chk{display:flex;align-items:center;gap:8px;font-weight:500;margin:12px 0 0}
+.chk input{width:auto}
+.lhero small{margin-top:auto;opacity:.6}
+@media (max-width:820px){nav .grp{display:none}}
