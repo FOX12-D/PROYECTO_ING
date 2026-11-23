@@ -100,12 +100,16 @@ function render(){guardar();
  if(view==="envio"){
   const c=e=>PEDIDOS.filter(x=>x.estado===e).length;
   m.innerHTML=head("Estado del envío")+`<div class="kpis">${ESTADOS.map(e=>`<div class="kpi"><b>${c(e)}</b><span>${e}</span></div>`).join("")}</div>
-  <div class="tw"><table><tr><th>Pedido</th><th>Cliente</th><th>Ruta</th><th>Avance</th><th>Estado</th><th></th></tr>${PEDIDOS.map(x=>{const t=x.items.reduce((a,i)=>a+i.qty,0),k=x.items.reduce((a,i)=>a+i.picked,0),pc=ESTADOS.indexOf(x.estado)>=2?100:Math.round(k/t*100);
-   return`<tr><td>${x.id}</td><td>${x.cliente}</td><td>${x.ruta}</td><td style="min-width:110px">${pc}%<div class="bar"><div style="width:${pc}%"></div></div></td><td>${user.id==="supervisor"?`<select data-p="${x.id}" aria-label="Estado de ${x.id}">${ESTADOS.map(e=>`<option ${e===x.estado?"selected":""}>${e}</option>`).join("")}</select>`:pill(x.estado,clsEnvio(x.estado))}</td><td><button class="btn sec" data-g="${x.id}">Gestionar</button></td></tr>`}).join("")}</table></div>
+  <div class="tw"><table><tr><th>Pedido</th><th>Cliente</th><th>Ruta</th><th>Avance</th><th>Estado</th><th></th></tr>${PEDIDOS.map(x=>{const t=x.items.reduce((a,i)=>a+i.qty,0),k=x.items.reduce((a,i)=>a+i.picked,0),pc=ESTADOS.indexOf(x.estado)*25;
+   return`<tr><td>${x.id}</td><td>${x.cliente}</td><td>${x.ruta}</td><td style="min-width:130px">${pc}%<div class="bar"><div style="width:${pc}%"></div></div><small style="color:var(--mute)">Picking ${k}/${t} und</small></td><td>${user.id==="supervisor"?`<select data-p="${x.id}" aria-label="Estado de ${x.id}">${ESTADOS.map(e=>`<option ${e===x.estado?"selected":""}>${e}</option>`).join("")}</select>`:pill(x.estado,clsEnvio(x.estado))}</td><td><button class="btn sec" data-g="${x.id}">Gestionar</button></td></tr>`}).join("")}</table></div>
   ${user.id==="supervisor"?"":`<p style="color:var(--mute)">Solo el supervisor puede cambiar el estado del envío.</p>`}`;
   m.querySelectorAll("[data-p]").forEach(s=>s.onchange=()=>{const x=PEDIDOS.find(y=>y.id===s.dataset.p),n=s.value,t=x.items.reduce((a,i)=>a+i.qty,0),k=x.items.reduce((a,i)=>a+i.picked,0);
-   if(ESTADOS.indexOf(n)>=2&&k<t){toast("No se puede: el picking de "+x.id+" está al "+Math.round(k/t*100)+"%. Complétalo primero.");audit("Error","Intento de pasar "+x.id+" a "+n+" con picking incompleto");render();return}
-   setEstado(x,n,"Estado cambiado por el supervisor a "+n);toast("Estado actualizado");render()});m.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{pedidoSel=b.dataset.g;view="ruta";render()})}
+   let txt="Estado cambiado por el supervisor a "+n;
+   if(ESTADOS.indexOf(n)>=2&&ESTADOS.indexOf(x.estado)<2&&k<t){
+    const pk=Math.round(k/t*100);
+    if(!confirm("El picking de "+x.id+" está al "+pk+"%. ¿Marcarlo como "+n+" de todos modos? Quedará registrado en Auditoría.")){render();return}
+    txt="Forzado por el supervisor a "+n+" con picking al "+pk+"%"}
+   setEstado(x,n,txt);toast("Estado actualizado");render()});m.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{pedidoSel=b.dataset.g;view="ruta";render()})}
 
 
  if(view==="catalogo"){
@@ -227,7 +231,7 @@ function confirmar(n){
 /* ---------- Reportes (PDF, CSV y correo) ---------- */
 const H={env:["Pedido","Cliente","Ruta","Camión","Avance","Estado"],mov:["Hora","Tipo / pedido","Lote","Cantidad","Stock anterior","Stock nuevo","Usuario"],lot:["Lote","Producto","Vence","Stock","Ubicación","Estado"],aud:["Fecha y hora","Usuario","Tipo","Detalle"]};
 function datosReporte(){
- return{env:PEDIDOS.map(x=>{const t=x.items.reduce((a,i)=>a+i.qty,0),k=x.items.reduce((a,i)=>a+i.picked,0);return[x.id,x.cliente,x.ruta,x.camion,k+"/"+t,x.estado+(x.entrega?" ("+x.entrega.fecha+")":"")]}),
+ return{env:PEDIDOS.map(x=>{const t=x.items.reduce((a,i)=>a+i.qty,0),k=x.items.reduce((a,i)=>a+i.picked,0);return[x.id,x.cliente,x.ruta,x.camion,ESTADOS.indexOf(x.estado)*25+"% (picking "+k+"/"+t+")",x.estado+(x.entrega?" ("+x.entrega.fecha+")":"")]}),
   mov:ACTUALIZACIONES.map(a=>[a.h,(a.tipo||"Picking")+" · "+a.ped,a.lote,dq(a),a.ant,a.nue,a.u]),
   lot:[...LOTES].sort((a,b)=>a.venc.localeCompare(b.venc)).map(l=>[l.id,prod(l.ean).nombre,l.venc,l.stock,l.ubic,estLote(l)[0]]),
   aud:AUDIT.slice(0,50).map(a=>[a.h,a.u,a.tipo,a.det])}}
